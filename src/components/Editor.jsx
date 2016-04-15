@@ -40,13 +40,12 @@ class TextEditor extends React.Component {
         let socket = io.connect( 'http://write.devjunk.org:3001' );
         this.setState({ socket: socket });
         socket.on( 'info', function( data ) {
-          var obj = {
-              connections: data.connections
-          }
-          this.setState({ connections: data.connections });
-        });
+            var obj = {
+                connections: data.connections
+            }
+            this.setState({ connections: data.connections });
+        }.bind(this));
         socket.on( 'message received', function( data ) {
-            console.log('data received');
             this.setState({ data: data });
         }.bind(this));
         setInterval(() => {

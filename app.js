@@ -23,7 +23,6 @@ io.sockets.on('connection', function (socket) {
     console.log(`Connections: ${users}`);
     socket.broadcast.emit('info', { connections: users });
     socket.on('chat data', function(data) {
-        console.log('data received');
         socket.broadcast.emit('message received', data);
     });
     socket.on('disconnect', function(data) {

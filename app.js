@@ -4,10 +4,34 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var debug = require('debug');
 var routes = require('./routes/index');
 
 var app = express();
+
+app.set('port', process.env.PORT || 3001);
+
+var server = app.listen(app.get('port'), function() {
+    debug('Express server listening on port ' + server.address().port);
+});
+
+var io = require('socket.io').listen(server);
+
+var users = 0;
+io.sockets.on('connection', function (socket) {
+    users++;
+    console.log(`Connections: ${users}`);
+    socket.broadcast.emit('info', { connections: users });
+    socket.on('chat data', function(data) {
+        console.log('data received');
+        socket.broadcast.emit('message received', data);
+    });
+    socket.on('disconnect', function(data) {
+        users--;
+        console.log(`Connections: ${users}`);
+        socket.broadcast.emit('info', { connections: users });
+    });
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -32,10 +32,23 @@ class TextEditor extends React.Component {
             data: data,
             view: 'edit',
             saved: false,
+            socket: null
         }
     }
 
     componentDidMount() {
+        let socket = io.connect( 'http://write.devjunk.org:3001' );
+        this.setState({ socket: socket });
+        socket.on( 'info', function( data ) {
+          var obj = {
+              connections: data.connections
+          }
+          this.setState({ connections: data.connections });
+        });
+        socket.on( 'message received', function( data ) {
+            console.log('data received');
+            this.setState({ data: data });
+        }.bind(this));
         setInterval(() => {
             if (!this.state.saved) {
                 this.save();
@@ -53,7 +66,8 @@ class TextEditor extends React.Component {
     }
 
     handleUpdate(raw,EditorState) {
-        this.setState({ data: raw, saved: false });
+        this.state.socket.emit('chat data', raw);
+        this.setState({ data: raw, saved: false, });
     }
 
     render() {
@@ -62,10 +76,12 @@ class TextEditor extends React.Component {
             height: '100%'
         };
         const {data, view, saved} = this.state;
-        return (<div>
+        return (
+            <div>
                 <Draft updateValue={ this.handleUpdate } placeholder="Write something!" style={ editorStyle } value={ data } />
                 <button onClick={this.toRaw}></button>
-                </div>);
+            </div>
+        );
     }
 }
 

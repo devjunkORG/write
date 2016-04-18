@@ -19,7 +19,10 @@ var server = app.listen(app.get('port'), function() {
 
 var io = require('socket.io').listen(server);
 var editorState = mongoose.Schema({
-    data: Object
+    data: Object,
+
+},{
+    timestamps: true
 });
 var stateModel = mongoose.model('editorState', editorState);
 

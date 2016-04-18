@@ -25,7 +25,7 @@ var stateModel = mongoose.model('editorState', editorState);
 
 var users = 0;
 var latestState;
-setInterval(() => {
+setInterval(function() {
     console.log('Saving current editor state');
     if (latestState) {
         var State = new stateModel({ data: latestState });
@@ -40,7 +40,7 @@ setInterval(() => {
 io.sockets.on('connection', function (socket) {
     users++;
     console.log(`Connections: ${users}`);
-    stateModel.findOne().sort({ created_at: -1 }).exec((err,state) => {
+    stateModel.findOne().sort({ created_at: -1 }).exec(function(err,state) {
         if (err) {
             return console.error('Could not get latest saved editor state', err);
         }

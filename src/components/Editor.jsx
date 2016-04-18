@@ -51,7 +51,7 @@ class TextEditor extends React.Component {
                 data.entityMap = {};
             }
             if (!data.blocks) {
-                data.blocks = {};
+                data.blocks = [];
             }
             this.setState({ data: data });
         }.bind(this));

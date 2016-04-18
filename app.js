@@ -44,8 +44,8 @@ io.sockets.on('connection', function (socket) {
         if (err) {
             return console.error('Could not get latest saved editor state', err);
         }
-        console.log(state);
-        return socket.broadcast.emit('message received', state);
+        console.log(state.data);
+        return socket.broadcast.emit('message received', state.data);
     });
     socket.broadcast.emit('info', { connections: users });
     socket.on('chat data', function(data) {

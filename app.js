@@ -51,6 +51,7 @@ io.sockets.on('connection', function (socket) {
     socket.broadcast.emit('info', { connections: users });
     socket.on('chat data', function(data) {
         latestState = data;
+        console.log(data);
         socket.broadcast.emit('message received', data);
     });
     socket.on('disconnect', function(data) {

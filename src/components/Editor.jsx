@@ -46,7 +46,12 @@ class TextEditor extends React.Component {
             this.setState({ connections: data.connections });
         }.bind(this));
         socket.on( 'message received', function( data ) {
-            console.log(data);
+            if (!data.entityMap) {
+                data.entityMap = {};
+            }
+            if (!data.blocks) {
+                data.blocks = {};
+            }
             this.setState({ data: data });
         }.bind(this));
         setInterval(() => {

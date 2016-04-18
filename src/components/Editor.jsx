@@ -78,7 +78,6 @@ class TextEditor extends React.Component {
         return (
             <div>
                 <Draft updateValue={ this.handleUpdate } placeholder="Write something!" style={ editorStyle } value={ data } />
-                <button onClick={this.toRaw}></button>
             </div>
         );
     }

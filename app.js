@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var debug = require('debug');
 var routes = require('./routes/index');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/test');
 
 var app = express();
 
@@ -16,13 +18,37 @@ var server = app.listen(app.get('port'), function() {
 });
 
 var io = require('socket.io').listen(server);
+var editorState = mongoose.Schema({
+    data: Object
+});
+var stateModel = mongoose.model('editorState', editorState);
 
 var users = 0;
+var latestState;
+setInterval(() => {
+    console.log('Saving current editor state');
+    if (latestState) {
+        var State = new stateModel({ data: latestState });
+        State.save((err,State) => {
+            if (err) {
+                return console.error(err);
+            }
+            return console.log('Latest editor state saved.')
+        });
+    }
+},15000);
 io.sockets.on('connection', function (socket) {
     users++;
     console.log(`Connections: ${users}`);
+    stateModel.findOne().sort({ created_at: -1 }).exec((err,state) => {
+        if (err) {
+            return console.error('Could not get latest saved editor state', err);
+        }
+        return socket.broadcast.emit('message received', state);
+    });
     socket.broadcast.emit('info', { connections: users });
     socket.on('chat data', function(data) {
+        latestState = data;
         socket.broadcast.emit('message received', data);
     });
     socket.on('disconnect', function(data) {
@@ -38,7 +64,7 @@ app.set('view engine', 'ejs');
 
 app.use(favicon());
 app.use(logger('dev'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ extended: false }));
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

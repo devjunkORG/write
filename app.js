@@ -29,7 +29,7 @@ setInterval(function() {
     console.log('Saving current editor state');
     if (latestState) {
         var State = new stateModel({ data: latestState });
-        State.save((err,State) => {
+        State.save(function(err,State) {
             if (err) {
                 return console.error(err);
             }

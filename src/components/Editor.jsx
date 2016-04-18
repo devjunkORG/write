@@ -46,7 +46,7 @@ class TextEditor extends React.Component {
             this.setState({ connections: data.connections });
         }.bind(this));
         socket.on( 'message received', function( data ) {
-            console.log('chat data received from server');
+            console.log('editor data received from server');
             if (!data.entityMap) {
                 data.entityMap = {};
             }

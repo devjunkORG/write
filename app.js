@@ -43,7 +43,7 @@ setInterval(function() {
 io.sockets.on('connection', function (socket) {
     users++;
     console.log(`Connections: ${users}`);
-    stateModel.findOne().sort({ created_at: -1 }).exec(function(err,state) {
+    stateModel.findOne().sort({ createdAt: -1 }).exec(function(err,state) {
         if (err) {
             return console.error('Could not get latest saved editor state', err);
         }

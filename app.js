@@ -28,7 +28,6 @@ var latestState;
 setInterval(function() {
     console.log('Saving current editor state');
     if (latestState) {
-        console.log(latestState);
         var State = new stateModel({ data: latestState });
         State.save(function(err,State)   {
             if (err) {
@@ -45,7 +44,7 @@ io.sockets.on('connection', function (socket) {
         if (err) {
             return console.error('Could not get latest saved editor state', err);
         }
-        console.log('Getting latest saved editor state');
+        console.log('Getting latest saved editor state',state);
         socket.broadcast.emit('message received', state);
     });
     socket.broadcast.emit('info', { connections: users });
